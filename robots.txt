@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://alexeykuzmin.github.com/sitemap.xml 
+Sitemap: http://alexeykuzmin.com/sitemap.xml 

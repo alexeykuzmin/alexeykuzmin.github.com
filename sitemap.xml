@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://alexeykuzmin.github.com/blog/archives/</loc>
+        <loc>http://alexeykuzmin.com/blog/archives/</loc>
         <lastmod>2013-01-05T10:32:35+04:00</lastmod>
     </url>
     <url>
-        <loc>http://alexeykuzmin.github.com/</loc>
+        <loc>http://alexeykuzmin.com/</loc>
         <lastmod>2013-01-05T10:32:35+04:00</lastmod>
     </url>
     <url>
-        <loc>http://alexeykuzmin.github.com/robots.txt</loc>
+        <loc>http://alexeykuzmin.com/robots.txt</loc>
         <lastmod>2013-01-05T10:32:35+04:00</lastmod>
     </url>
 </urlset>
