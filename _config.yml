@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://alexeykuzmin.github.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://alexeykuzmin.com
+title: Absolutely empty blog
+subtitle: Why do I need it?
+author: Alexey Kuzmin
 simple_search: http://google.com/search
 description:
 
