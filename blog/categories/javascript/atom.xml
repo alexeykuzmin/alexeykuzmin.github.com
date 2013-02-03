@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[alexeykuzmin.com]]></title>
-  <link href="http://alexeykuzmin.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: javascript | alexeykuzmin.com]]></title>
+  <link href="http://alexeykuzmin.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alexeykuzmin.com/"/>
   <updated>2013-02-04T02:01:45+04:00</updated>
   <id>http://alexeykuzmin.com/</id>
@@ -18,25 +18,22 @@
     <link href="http://alexeykuzmin.com/blog/2013/02/04/javascript-terminology-the-two-prototypes/"/>
     <updated>2013-02-04T02:35:00+04:00</updated>
     <id>http://alexeykuzmin.com/blog/2013/02/04/javascript-terminology-the-two-prototypes</id>
-    <content type="html"><![CDATA[<p><em>Перевод статьи <a href="http://rauschma.de/">Dr. Axel Rauschmayer</a>&#8216;а “<a href="http://www.2ality.com/2013/01/two-prototypes.html">JavaScript terminology: the two prototypes</a>”.</em></p>
+    <content type="html"><![CDATA[<p><em>Перевод статьи <a href="http://rauschma.de/">Dr. Axel Rauschmayer</a>'а “<a href="http://www.2ality.com/2013/01/two-prototypes.html">JavaScript terminology: the two prototypes</a>”.</em></p>
 
-<p>К сожалению, в JavaScript&#8217;е термин “прототип” (“prototype”) имеет несколько значений.</p>
+<p>К сожалению, в JavaScript'е термин “прототип” (“prototype”) имеет несколько значений.</p>
 
 <h2>Прототип 1: связь между объектами</h2>
 
 <p>Во-первых, существуют прототипы объектов.<br/>
-Согласно спецификации ECMAScript, некоторые свойства объектов являются <em>внутренними</em>. Внутренние свойства напрямую недоступны из JavaScript&#8217;а, их имена пишутся в двойных квадратных скобках. Одно их таких свойств, [[Prototype]], используется для реализации прототипного наследования. Каждый объект содержит в [[Prototype]] ссылку на свой прототип и т.о. наследует все его свойства. В ECMAScript 5 стало возможно получить ссылку на прототип объекта с помощью функции <code>Object.getPrototypeOf()</code>:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+Согласно спецификации ECMAScript, некоторые свойства объектов являются <em>внутренними</em>. Внутренние свойства напрямую недоступны из JavaScript'а, их имена пишутся в двойных квадратных скобках. Одно их таких свойств, [[Prototype]], используется для реализации прототипного наследования. Каждый объект содержит в [[Prototype]] ссылку на свой прототип и т.о. наследует все его свойства. В ECMAScript 5 стало возможно получить ссылку на прототип объекта с помощью функции <code>Object.getPrototypeOf()</code>:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">({})</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span>
 </span><span class='line'><span class="c1">// true</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-
-<p>И возможно создать новый объект, явно указав его прототип, с помощью функции <code>Object.create()</code>:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>И возможно создать новый объект, явно указав его прототип, с помощью функции <code>Object.create()</code>:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -44,8 +41,7 @@
 </span><span class='line'><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">proto</span><span class="p">);</span>
 </span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">foo</span>
 </span><span class='line'><span class="c1">// 123</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Подробнее про обе эти функции можно почитать по ссылке <a href="#ref1">[1]</a>. В ECMAScript 6 можно будет получить ссылку на прототип объекта, используя специальное свойство <code>__proto__</code> <a href="#ref2">[2]</a>.</p>
 
@@ -54,7 +50,7 @@
 <p>Во-вторых, каждый конструктор имеет свойство <code>prototype</code>.<br/>
 Это свойство содержит ссылку на объект, который будет прототипом всех объектов, которые будут созданы с помощью этого конструктора.</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -62,21 +58,18 @@
 </span><span class='line'><span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span>
 </span><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="o">===</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span>
 </span><span class='line'><span class="c1">// true</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <h2>Разрешаем конфликт именований</h2>
 
-<p>Обычно из контекста понятно, какой из прототипов имеется ввиду. Если всё-таки возникает неопределённость, то под “prototype” приходится понимать прототип объекта, потому что именно в этом смысле этот термин используется в стандартной библиотеке в названии функции <code>getPrototypeOf</code>. Получается, нужно искать другое название для объекта, на который ссылается свойство <code>prototype</code> конструкторов. Можно было бы использовать термин “прототип конструктора” (“constructor prototype”), но это не избавит нас от неоднозначности, потому что у конструкторов тоже есть свой прототип:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>Обычно из контекста понятно, какой из прототипов имеется ввиду. Если всё-таки возникает неопределённость, то под “prototype” приходится понимать прототип объекта, потому что именно в этом смысле этот термин используется в стандартной библиотеке в названии функции <code>getPrototypeOf</code>. Получается, нужно искать другое название для объекта, на который ссылается свойство <code>prototype</code> конструкторов. Можно было бы использовать термин “прототип конструктора” (“constructor prototype”), но это не избавит нас от неоднозначности, потому что у конструкторов тоже есть свой прототип:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">Foo</span><span class="p">()</span> <span class="p">{}</span>
 </span><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">Foo</span><span class="p">)</span> <span class="o">===</span> <span class="nb">Function</span><span class="p">.</span><span class="nx">prototype</span>
 </span><span class='line'><span class="c1">// true</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>В итоге, наилучшим вариантом выглядит “прототип экземпляра” (“instance prototype”).</p>
 
