@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | alexeykuzmin.com]]></title>
   <link href="http://alexeykuzmin.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alexeykuzmin.com/"/>
-  <updated>2013-02-08T23:30:10+04:00</updated>
+  <updated>2013-03-29T04:49:04+04:00</updated>
   <id>http://alexeykuzmin.com/</id>
   <author>
     <name><![CDATA[Alexey Kuzmin]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<p><em>Перевод статьи <a href="http://rauschma.de/">Dr. Axel Rauschmayer</a>'а “<a href="http://www.2ality.com/2012/12/arrays.html">Arrays in JavaScript</a>”.</em></p>
 
 <p>Статья посвящена особенностям реализации массивов в JavaScript. Как ни странно, они мало чем отличаются от обычных объектов.</p>
+
+<!-- more -->
+
 
 <h2>1. В двух словах</h2>
 
@@ -337,6 +340,9 @@
     <content type="html"><![CDATA[<p><em>Перевод статьи <a href="http://rauschma.de/">Dr. Axel Rauschmayer</a>'а “<a href="http://www.2ality.com/2013/01/two-prototypes.html">JavaScript terminology: the two prototypes</a>”.</em></p>
 
 <p>К сожалению, в JavaScript'е термин “прототип” (“prototype”) имеет несколько значений.</p>
+
+<!-- more -->
+
 
 <h2>Прототип 1: связь между объектами</h2>
 
