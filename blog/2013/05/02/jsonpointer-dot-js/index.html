@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>jsonpointer.js - alexeykuzmin.com</title>
+  <meta name="author" content="Alexey Kuzmin">
+
+  
+  <meta name="description" content="Although JSON&#160;Pointer did not become very popular since
+its appearance in 2011,
+it&#8217;s still alive and even has evolved into proposed &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alexeykuzmin.com/blog/2013/05/02/jsonpointer-dot-js/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="alexeykuzmin.com" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37454675-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">alexeykuzmin.com</a></h1>
+  
+    <h2>About simple things</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alexeykuzmin.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">jsonpointer.js</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-02T01:01:00+04:00" pubdate data-updated="true">May 2<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Although JSON&#160;Pointer did not become very popular since
+its <a href="http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00">appearance in 2011</a>,
+it&#8217;s still alive and even has evolved into <a href="http://tools.ietf.org/html/rfc6901">proposed standard</a>.</p>
+
+<!-- more -->
+
+
+<h2>What JSON Pointer is</h2>
+
+<p>It&#8217;s hard to explain it better than specification does:</p>
+
+<blockquote><p>JSON Pointer defines a string syntax for identifying a specific value
+within a JavaScript Object Notation (JSON) document.</p></blockquote>
+
+<p>It is similar to <a href="http://goessner.net/articles/JsonPath/">JSON&#160;Path</a>,
+but unlike the latter JSON&#160;Pointer extracts only <em>existing&#160;values</em> from document
+and does not do any filtering or merging.</p>
+
+<p>There is copy of evaluation examples from spec. Given the JSON document</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">],</span>
+</span><span class='line'>    <span class="nt">&quot;&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;a/b&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;c%d&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;e^f&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;g|h&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;i\\j&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;k\&quot;l&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot; &quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;m~n&quot;</span><span class="p">:</span> <span class="mi">8</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The following strings evaluate to the accompanying values:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="s2">&quot;&quot;</span>       -&gt;  whole document
+</span><span class='line'><span class="s2">&quot;/foo&quot;</span>   -&gt;  <span class="o">[</span><span class="s2">&quot;bar&quot;</span>, <span class="s2">&quot;baz&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="s2">&quot;/foo/0&quot;</span> -&gt;  <span class="s2">&quot;bar&quot;</span>
+</span><span class='line'><span class="s2">&quot;/&quot;</span>      -&gt;  0
+</span><span class='line'><span class="s2">&quot;/a~1b&quot;</span>  -&gt;  1
+</span><span class='line'><span class="s2">&quot;/c%d&quot;</span>   -&gt;  2
+</span><span class='line'><span class="s2">&quot;/e^f&quot;</span>   -&gt;  3
+</span><span class='line'><span class="s2">&quot;/g|h&quot;</span>   -&gt;  4
+</span><span class='line'><span class="s2">&quot;/i\\j&quot;</span>  -&gt;  5
+</span><span class='line'><span class="s2">&quot;/k\&quot;l&quot;</span>  -&gt;  6
+</span><span class='line'><span class="s2">&quot;/ &quot;</span>     -&gt;  7
+</span><span class='line'><span class="s2">&quot;/m~0n&quot;</span>  -&gt;  8
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Existing implementations</h2>
+
+<p>There is a bunch of JSON&#160;Pointer implementations in&#160;different languages:
+<a href="https://github.com/janl/erl-jsonpointer">Erlang</a>,
+<a href="https://github.com/dustin/go-jsonpointer">Go</a>,
+<a href="https://github.com/zigorou/perl-json-pointer">Perl</a>,
+<a href="https://github.com/raphaelstolt/php-jsonpointer">PHP</a>,
+<a href="https://github.com/stefankoegl/python-json-pointer">Python</a>,
+and there are
+<a href="https://github.com/janl/node-jsonpointer">two</a>
+<a href="https://github.com/manuelstofer/json-pointer">implementations</a>
+in JavaScript.</p>
+
+<p>Both of JavaScript implementations work only in Node.js environment
+and&#160;implement something bigger than specification defines.
+They support methods not only for retrieving values
+but also for modifying JSON documents and other stuff.</p>
+
+<h2>jsonpointer.js</h2>
+
+<p>Since there was no client-side implementation of JSON&#160;Pointer in JavaScript
+I have created my own one – <a href="https://github.com/alexeykuzmin/jsonpointer.js">jsonpointer.js</a>.
+It implements only retrieving of values defined by specification,
+works and all modern browsers and can be used as standalone script or <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">AMD</a> module.
+Also it works in Node.js environment and <a href="https://npmjs.org/package/jsonpointer.js">is available</a> via <a href="https://npmjs.org">npm</a>.</p>
+
+<p>Here are several examples of its usage:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;/path/to/jsonpointer.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// XXX: Target must be a string!</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">targetJSON</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">bar</span><span class="o">:</span> <span class="s1">&#39;foobar&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">baz</span><span class="o">:</span> <span class="p">[</span><span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">]</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">jsonpointer</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">targetJSON</span><span class="p">,</span> <span class="s1">&#39;/foo&#39;</span><span class="p">);</span>  <span class="c1">// {bar: &#39;foobar&#39;}</span>
+</span><span class='line'><span class="nx">jsonpointer</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">targetJSON</span><span class="p">,</span> <span class="s1">&#39;/baz/test&#39;</span><span class="p">);</span>  <span class="c1">// undefined</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Partial application.</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">evaluate</span> <span class="o">=</span> <span class="nx">jsonpointer</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">targetJSON</span><span class="p">);</span>
+</span><span class='line'><span class="nx">evaluate</span><span class="p">(</span><span class="s1">&#39;/foo/bar&#39;</span><span class="p">);</span>  <span class="c1">// &#39;foobar&#39;</span>
+</span><span class='line'><span class="nx">evaluate</span><span class="p">(</span><span class="s1">&#39;/baz&#39;</span><span class="p">);</span>  <span class="c1">// [true, false]</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Detailed description of API can be found in project <a href="https://github.com/alexeykuzmin/jsonpointer.js#readme">README</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alexey Kuzmin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-02T01:01:00+04:00" pubdate data-updated="true">May 2<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/english/'>english</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://alexeykuzmin.com/blog/2013/05/02/jsonpointer-dot-js/" data-via="" data-counturl="http://alexeykuzmin.com/blog/2013/05/02/jsonpointer-dot-js/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/05/arrays-in-javascript/" title="Previous Post: Массивы в JavaScript'е">&laquo; Массивы в JavaScript'е</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/02/jsonpointer-dot-js/">jsonpointer.js</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/05/arrays-in-javascript/">Массивы в JavaScript'е</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/04/javascript-terminology-the-two-prototypes/">Терминология JavaScript: два прототипа</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Alexey Kuzmin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'alexeykuzmincom';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://alexeykuzmin.com/blog/2013/05/02/jsonpointer-dot-js/';
+        var disqus_url = 'http://alexeykuzmin.com/blog/2013/05/02/jsonpointer-dot-js/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

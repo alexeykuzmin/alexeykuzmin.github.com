@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: english | alexeykuzmin.com]]></title>
+  <link href="http://alexeykuzmin.com/blog/categories/english/atom.xml" rel="self"/>
+  <link href="http://alexeykuzmin.com/"/>
+  <updated>2013-05-02T00:14:36+04:00</updated>
+  <id>http://alexeykuzmin.com/</id>
+  <author>
+    <name><![CDATA[Alexey Kuzmin]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[jsonpointer.js]]></title>
+    <link href="http://alexeykuzmin.com/blog/2013/05/02/jsonpointer-dot-js/"/>
+    <updated>2013-05-02T01:01:00+04:00</updated>
+    <id>http://alexeykuzmin.com/blog/2013/05/02/jsonpointer-dot-js</id>
+    <content type="html"><![CDATA[<p>Although JSON&#160;Pointer did not become very popular since
+its <a href="http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00">appearance in 2011</a>,
+it's still alive and even has evolved into <a href="http://tools.ietf.org/html/rfc6901">proposed standard</a>.</p>
+
+<!-- more -->
+
+
+<h2>What JSON Pointer is</h2>
+
+<p>It's hard to explain it better than specification does:</p>
+
+<blockquote><p>JSON Pointer defines a string syntax for identifying a specific value
+within a JavaScript Object Notation (JSON) document.</p></blockquote>
+
+<p>It is similar to <a href="http://goessner.net/articles/JsonPath/">JSON&#160;Path</a>,
+but unlike the latter JSON&#160;Pointer extracts only <em>existing&#160;values</em> from document
+and does not do any filtering or merging.</p>
+
+<p>There is copy of evaluation examples from spec. Given the JSON document
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span><span class="err">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;pre&gt;&lt;code&gt;</span><span class="nt">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">],</span>
+</span><span class='line'><span class="nt">&quot;&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot;a/b&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot;c%d&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot;e^f&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot;g|h&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot;i\\j&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot;k\&quot;l&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot; &quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+</span><span class='line'><span class="nt">&quot;m~n&quot;</span><span class="p">:</span> <span class="mi">8</span>
+</span><span class='line'><span class="err">&lt;/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The following strings evaluate to the accompanying values:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="s2">&quot;&quot;</span>       -&gt;  whole document
+</span><span class='line'><span class="s2">&quot;/foo&quot;</span>   -&gt;  <span class="o">[</span><span class="s2">&quot;bar&quot;</span>, <span class="s2">&quot;baz&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="s2">&quot;/foo/0&quot;</span> -&gt;  <span class="s2">&quot;bar&quot;</span>
+</span><span class='line'><span class="s2">&quot;/&quot;</span>      -&gt;  0
+</span><span class='line'><span class="s2">&quot;/a~1b&quot;</span>  -&gt;  1
+</span><span class='line'><span class="s2">&quot;/c%d&quot;</span>   -&gt;  2
+</span><span class='line'><span class="s2">&quot;/e&lt;sup&gt;f&quot;</span>&lt;/sup&gt;   -&gt;  3
+</span><span class='line'><span class="s2">&quot;/g|h&quot;</span>   -&gt;  4
+</span><span class='line'><span class="s2">&quot;/i\j&quot;</span>  -&gt;  5
+</span><span class='line'><span class="s2">&quot;/k\&quot;l&quot;</span>  -&gt;  6
+</span><span class='line'><span class="s2">&quot;/ &quot;</span>     -&gt;  7
+</span><span class='line'><span class="s2">&quot;/m~0n&quot;</span>  -&gt;  8
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Existing implementations</h2>
+
+<p>There is a bunch of JSON&#160;Pointer implementations in&#160;different languages:
+<a href="https://github.com/janl/erl-jsonpointer">Erlang</a>,
+<a href="https://github.com/dustin/go-jsonpointer">Go</a>,
+<a href="https://github.com/zigorou/perl-json-pointer">Perl</a>,
+<a href="https://github.com/raphaelstolt/php-jsonpointer">PHP</a>,
+<a href="https://github.com/stefankoegl/python-json-pointer">Python</a>,
+and there are
+<a href="https://github.com/janl/node-jsonpointer">two</a>
+<a href="https://github.com/manuelstofer/json-pointer">implementations</a>
+in JavaScript.</p>
+
+<p>Both of JavaScript implementations work only in Node.js environment
+and&#160;implement something bigger than specification defines.
+They support methods not only for retrieving values
+but also for modifying JSON documents and other stuff.</p>
+
+<h2>jsonpointer.js</h2>
+
+<p>Since there was no client-side implementation of JSON&#160;Pointer in JavaScript
+I have created my own one – <a href="https://github.com/alexeykuzmin/jsonpointer.js">jsonpointer.js</a>.
+It implements only retrieving of values defined by specification,
+works and all modern browsers and can be used as standalone script or <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">AMD</a> module.
+Also it works in Node.js environment and <a href="https://npmjs.org/package/jsonpointer.js">is available</a> via <a href="https://npmjs.org">npm</a>.</p>
+
+<p>Here are several examples of its usage:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://alexeykuzmin.com/path/to/jsonpointer.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// XXX: Target must be a string!</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">targetJSON</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">bar</span><span class="o">:</span> <span class="s1">&#39;foobar&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">baz</span><span class="o">:</span> <span class="p">[</span><span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">]</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">jsonpointer</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">targetJSON</span><span class="p">,</span> <span class="s1">&#39;/foo&#39;</span><span class="p">);</span>  <span class="c1">// {bar: &#39;foobar&#39;}</span>
+</span><span class='line'><span class="nx">jsonpointer</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">targetJSON</span><span class="p">,</span> <span class="s1">&#39;/baz/test&#39;</span><span class="p">);</span>  <span class="c1">// undefined</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Partial application.</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">evaluate</span> <span class="o">=</span> <span class="nx">jsonpointer</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">targetJSON</span><span class="p">);</span>
+</span><span class='line'><span class="nx">evaluate</span><span class="p">(</span><span class="s1">&#39;/foo/bar&#39;</span><span class="p">);</span>  <span class="c1">// &#39;foobar&#39;</span>
+</span><span class='line'><span class="nx">evaluate</span><span class="p">(</span><span class="s1">&#39;/baz&#39;</span><span class="p">);</span>  <span class="c1">// [true, false]</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Detailed description of API can be found in project <a href="https://github.com/alexeykuzmin/jsonpointer.js#readme">README</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>
